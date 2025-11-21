@@ -1,3 +1,0 @@
-# Backends
-
-::: guardian.backends.ObjectPermissionBackend
