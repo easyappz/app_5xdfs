@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ChatMessage, Member
+from .models import ChatMessage, Member, MemberToken
 
 
 @admin.register(Member)
@@ -24,3 +24,11 @@ class ChatMessageAdmin(admin.ModelAdmin):
         return content
 
     short_content.short_description = "content"
+
+
+@admin.register(MemberToken)
+class MemberTokenAdmin(admin.ModelAdmin):
+    list_display = ("id", "member", "key", "created_at")
+    list_select_related = ("member",)
+    search_fields = ("key", "member__username")
+    ordering = ("-created_at",)

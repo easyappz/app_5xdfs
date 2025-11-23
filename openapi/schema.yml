@@ -21,6 +21,108 @@ paths:
               schema:
                 $ref: '#/components/schemas/Message'
           description: ''
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      tags:
+        - auth
+      description: Регистрация нового участника.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberRegistration'
+      responses:
+        '201':
+          description: Успешная регистрация.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Ошибка валидации данных регистрации.
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      tags:
+        - auth
+      description: Авторизация участника по имени пользователя и паролю.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberLogin'
+      responses:
+        '200':
+          description: Успешная авторизация.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Неверные учетные данные или некорректный запрос.
+  /api/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      tags:
+        - auth
+      description: Получение данных текущего участника по токену.
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Данные текущего участника.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '401':
+          description: Недействительный или отсутствующий токен.
+  /api/chat/messages/:
+    get:
+      operationId: chat_messages_list
+      tags:
+        - chat
+      description: Получение списка последних сообщений группового чата. Возвращаются не более 50 сообщений, отсортированных по времени создания.
+      security:
+        - TokenAuth: []
+      responses:
+        '200':
+          description: Список сообщений.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+        '401':
+          description: Недействительный или отсутствующий токен.
+    post:
+      operationId: chat_messages_create
+      tags:
+        - chat
+      description: Отправка нового сообщения в групповой чат.
+      security:
+        - TokenAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+      responses:
+        '201':
+          description: Сообщение успешно создано.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        '400':
+          description: Ошибка валидации данных сообщения.
+        '401':
+          description: Недействительный или отсутствующий токен.
 components:
   schemas:
     Message:
@@ -84,6 +186,35 @@ components:
         - content
         - created_at
         - member
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        member:
+          $ref: '#/components/schemas/Member'
+      required:
+        - token
+        - member
+    MemberLogin:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          maxLength: 128
+      required:
+        - username
+        - password
+    ChatMessageCreate:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
   securitySchemes:
     basicAuth:
       type: http
@@ -92,3 +223,8 @@ components:
       type: apiKey
       in: cookie
       name: sessionid
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: 'Token-based authentication using header: "Authorization: Token <key>"'
