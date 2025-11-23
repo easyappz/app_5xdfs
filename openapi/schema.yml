@@ -9,11 +9,11 @@ paths:
       operationId: api_hello_retrieve
       description: Get a hello world message
       tags:
-      - api
+        - api
       security:
-      - cookieAuth: []
-      - basicAuth: []
-      - {}
+        - cookieAuth: []
+        - basicAuth: []
+        - {}
       responses:
         '200':
           content:
@@ -34,8 +34,56 @@ components:
           format: date-time
           readOnly: true
       required:
-      - message
-      - timestamp
+        - message
+        - timestamp
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 150
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - id
+        - username
+        - created_at
+    MemberRegistration:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          maxLength: 128
+      required:
+        - username
+        - password
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        member:
+          $ref: '#/components/schemas/Member'
+      required:
+        - id
+        - content
+        - created_at
+        - member
   securitySchemes:
     basicAuth:
       type: http
