@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import ErrorBoundary from './ErrorBoundary';
 import './App.css';
 
+import { Header } from './components/Header';
 import { Home } from './components/Home';
 import { Register } from './components/Register';
 import { Login } from './components/Login';
@@ -18,14 +19,21 @@ function App() {
   }, []);
 
   return (
-    <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </ErrorBoundary>
+    <div data-easytag="id1-src/App.jsx" className="app-root">
+      <Header />
+      <main className="app-main">
+        <div className="app-main-inner">
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </ErrorBoundary>
+        </div>
+      </main>
+    </div>
   );
 }
 
